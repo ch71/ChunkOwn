@@ -27,12 +27,11 @@ public class WorldConfig {
     public void write() {        
         String chunkPrefix = chunk.getX() + "," + chunk.getZ();
         
-        config = new Configuration(new File(ChunkOwn.dataFolder, chunk.getWorld().getName() + ".yml"));
+        config = new Configuration(new File(ChunkOwn.dataFolder, chunk.getWorld().getName() + ".yml"));        
+        config.load();
         config.setProperty(chunkPrefix + ".name", details.getNameExact());
         config.setProperty(chunkPrefix + ".owner", details.getOwner());
         config.setProperty(chunkPrefix + ".conquestBacking", details.getConquestBacking());
-        config.save();
-        config.load();
         details.setName(config.getString(chunkPrefix + ".name", ""));
         details.setOwner(config.getString(chunkPrefix + ".owner", ""));
         details.setConquestBacking(config.getInt(chunkPrefix + ".conquestBacking", 1));
