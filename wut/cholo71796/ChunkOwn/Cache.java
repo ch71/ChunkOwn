@@ -34,48 +34,39 @@ public class Cache { //not actually a real cache, just holding the data
     public static void storeCache() {
         Log.debug("Writing cache to hard drive...");
         for (Chunk key : cache.keySet()) {
-            Log.debug("found " + key.getX() + ", " + key.getZ());
-            cache.get(key).write(key.getWorld().getName(), key.getX() + ", " + key.getZ());
+            new WorldConfig(key, Cache.cache.get(key)).write();
         }
         Log.debug("Cache write complete.");
     }
     
     public static void loadCache() {
-        File[] folderContents = ChunkOwn.dataFolder.listFiles();
-        
-        List<World> actualWorlds = ChunkOwn.plugin.getServer().getWorlds();
-        
         List<File> validWorldEntries = new ArrayList<File>();
         
-        for (File worldConfig : folderContents) {
-            for (World world : actualWorlds) {
-                if (worldConfig.getName().replaceAll(".yml", "").equals(world.getName())) {
-                    validWorldEntries.add(worldConfig);
-                    Log.debug("added " + worldConfig.getPath());
+        for (File prospectConfig : ChunkOwn.dataFolder.listFiles()) {
+            for (World world : ChunkOwn.plugin.getServer().getWorlds()) {
+                if (prospectConfig.getName().replaceAll(".yml", "").equals(world.getName())) {
+                    validWorldEntries.add(prospectConfig);
+                    Log.debug("added " + prospectConfig.getPath());
                 }
             }
         }
         
         for (File file : validWorldEntries){
-            Log.debug("started check for " + file.getPath());
             Configuration fileConfig = new Configuration(file);
-            fileConfig.load();
             Log.debug("keys: " + fileConfig.getKeys());
+            fileConfig.load();
             for (String key : fileConfig.getKeys()) {
                 Log.debug("Found key: " + key);
-                String[] coords = key.split(", ");
+                String[] coords = key.split(",");
                 int xCoord = Integer.parseInt(coords[0]);
                 int zCoord = Integer.parseInt(coords[1]);
-                Log.debug("Coords: " + coords[0] +", "+ coords[1]);
                 Chunk chunk = ChunkOwn.plugin.getServer().getWorld(file.getName().replaceAll(".yml", "")).getChunkAt(xCoord, zCoord);
-                Log.debug("Discovered chunk " + chunk.getX() + ", " + chunk.getZ());
-                ChunkDetails details = new ChunkDetails();
+                Log.debug("Discovered chunk " + chunk.getX() + "," + chunk.getZ());
                 
+                ChunkDetails details = new ChunkDetails();                
                 details.setName(fileConfig.getString(key + ".name", ""));
                 details.setOwner(fileConfig.getString(key + ".owner", ""));
-                details.setConquestBacking(fileConfig.getInt(key + ".conquestBacking", 1));
-                fileConfig.save();
-                
+                details.setConquestBacking(fileConfig.getInt(key + ".conquestBacking", 1));                
                 Cache.cache.put(chunk, details);
             }
         }
