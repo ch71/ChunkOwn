@@ -66,11 +66,15 @@ public class ChunkOwnCommand implements CommandExecutor {
     private boolean runClaimCommand() {
         Chunk chunk = player.getLocation().getBlock().getChunk();
         
+        if (!ChunkOwn.conquest.containsKey(player)){
+            ChunkOwn.conquest.put(player, ChunkOwnConfig.getConquestCap());
+        }
+        
         if (ChunkOwn.conquest.get(player) < ChunkOwnConfig.getCostClaimChunk()) {
             player.sendMessage(ChatColor.GOLD + "You do not have enough " + ChatColor.WHITE + "conquest " + ChatColor.GOLD + "to do that.");
             return false;
-        }        
-       
+        }
+        
         if (!Cache.cache.containsKey(chunk)) {
             ChunkDetails details = new ChunkDetails();
             details.setOwner(player.getDisplayName());
@@ -91,6 +95,10 @@ public class ChunkOwnCommand implements CommandExecutor {
     
     private boolean runClaimAndNameCommand(String name) {
         Chunk chunk = player.getLocation().getBlock().getChunk();
+        
+        if (!ChunkOwn.conquest.containsKey(player)){
+            ChunkOwn.conquest.put(player, ChunkOwnConfig.getConquestCap());
+        }
         
         if (ChunkOwn.conquest.get(player) < ChunkOwnConfig.getCostClaimChunk()) {
             player.sendMessage(ChatColor.GOLD + "You do not have enough " + ChatColor.WHITE + "conquest " + ChatColor.GOLD + "to do that.");

@@ -3,6 +3,7 @@ package wut.cholo71796.ChunkOwn.variables;
 import java.io.File;
 
 import org.bukkit.util.config.Configuration;
+import wut.cholo71796.ChunkOwn.ChunkOwn;
 
 import wut.cholo71796.ChunkOwn.ChunkOwnConfig;
 
@@ -84,20 +85,16 @@ public class ChunkDetails {
         this.conquestBacking = conquestBacking;
     }
     
-    public void write(File file) {
-        configFile = file;
-        
-        config = new Configuration(configFile);        
-        //Log.debug("Writing data to config " + file.getName());
-        config.setProperty("name", this.getName());
-        config.setProperty("owner", this.getOwner());
-        config.setProperty("conquestBacking", this.getConquestBacking());
-        config.save();        
-        //Log.debug("Retrieving data from " + file.getName());
+    public void write(String world, String chunkPrefix) {
+        config = new Configuration(new File(ChunkOwn.dataFolder, world + ".yml"));        
+        config.setProperty(chunkPrefix + ".name", this.getName());
+        config.setProperty(chunkPrefix + ".owner", this.getOwner());
+        config.setProperty(chunkPrefix + ".conquestBacking", this.getConquestBacking());
+        config.save();
         config.load();
-        name = config.getString("name", "");
-        owner = config.getString("owner", "");
-        conquestBacking = config.getInt("conquestBacking", 1);
+        name = config.getString(chunkPrefix + ".name", "");
+        owner = config.getString(chunkPrefix + ".owner", "");
+        conquestBacking = config.getInt(chunkPrefix + ".conquestBacking", 1);
         config.save();
     }
 }
