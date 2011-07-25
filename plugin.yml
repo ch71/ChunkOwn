@@ -1,0 +1,8 @@
+name: ChunkOwn
+version: 0.0
+main: wut.cholo71796.ChunkOwn.ChunkOwn
+description: Provides the ability to 
+author: cholo71796
+commands:
+   chunkown:
+       aliases: [conquest, co, chunko, cown, cq, conq, power]
